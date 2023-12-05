@@ -62,7 +62,6 @@ body {
 .dataph {
   min-width: 300px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -72,8 +71,11 @@ body {
   aspect-ratio: 1;
 }
 
-.dateph {
+.data {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 #info {
