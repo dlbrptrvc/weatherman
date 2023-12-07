@@ -45,3 +45,7 @@ leftbtn.addEventListener("touchstart", (event) => {
     carousel.scrollLeft--;
   }, 1);
 });
+
+function centerCarousel() {
+  carousel.scrollLeft = carousel.scrollWidth / 2;
+}

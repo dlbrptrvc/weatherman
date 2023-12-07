@@ -13,6 +13,8 @@ body {
   justify-content: center;
   align-items: center;
   gap: 25px;
+  background-image: linear-gradient(#64748b, #020617);
+  color: white;
 }
 
 .carouselph {
@@ -71,7 +73,7 @@ body {
   aspect-ratio: 1;
 }
 
-.data {
+.daydata {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -81,4 +83,30 @@ body {
 #info {
   display: flex;
   flex-direction: column;
+}
+
+#leftbtn,
+#leftarrow {
+  background-image: url("./images/arrow_left.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#rightbtn,
+#rightarrow {
+  background-image: url("./images/arrow_right.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.image {
+  width: 75px;
+  aspect-ratio: 1;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#icon {
+  background-position: center;
+  background-repeat: no-repeat;
 }
