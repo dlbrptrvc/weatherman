@@ -22,7 +22,7 @@ function setImages() {
     if (code < 50 && code > 40) {
       setImage(item, "mist");
     }
-    if ((code < 70 && code > 50) || (code < 85 && code > 80)) {
+    if ((code < 70 && code > 50) || (code < 85 && code > 79)) {
       setImage(item, "rainy");
     }
     if ((code < 80 && code > 70) || (code < 90 && code > 84)) {
