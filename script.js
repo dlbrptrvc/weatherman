@@ -185,13 +185,3 @@ rightarrow.addEventListener("click", () => {
 leftarrow.addEventListener("click", () => {
   setWeather(+daydata.dataset.day - 1);
 });
-
-// gobtn.addEventListener("click", () => {
-//   fetchAddress(cityinput.value);
-// });
-
-// cityinput.addEventListener("keyup", function (event) {
-//   if (event.keyCode === 13) {
-//     gobtn.click();
-//   }
-// });
