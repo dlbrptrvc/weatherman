@@ -35,8 +35,7 @@ body {
 .item {
   flex-shrink: 0;
   margin: 10px;
-  width: 85px;
-  aspect-ratio: 1;
+  width: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
