@@ -20,6 +20,8 @@ let defaultData = {
 
 let dailyInfo = [];
 let hourlyInfo = [[], [], [], [], [], [], []];
+let defaultOffset = new Date().getTimezoneOffset() * 60000;
+let offset = 0;
 setDOM();
 getWeather();
 
@@ -60,9 +62,9 @@ function setDOM() {
 function getWeather() {
   let url = "";
   if (defaultData.umd == "&degC") {
-    url = `https://api.open-meteo.com/v1/forecast?latitude=${defaultData.lat}&longitude=${defaultData.lon}&current=temperature_2m,precipitation&hourly=weather_code,temperature_2m,precipitation_probability,wind_speed_10m&daily=weather_code,sunrise,sunset,temperature_2m_max,precipitation_probability_max&timeformat=unixtime&timezone=${defaultData.tmz}`;
+    url = `https://api.open-meteo.com/v1/forecast?latitude=${defaultData.lat}&longitude=${defaultData.lon}&current=weather_code,temperature_2m,precipitation&hourly=weather_code,temperature_2m,precipitation_probability,wind_speed_10m&daily=weather_code,sunrise,sunset,temperature_2m_max,precipitation_probability_max&timeformat=unixtime&timezone=${defaultData.tmz}`;
   } else {
-    url = `https://api.open-meteo.com/v1/forecast?latitude=${defaultData.lat}&longitude=${defaultData.lon}&current=temperature_2m,precipitation&hourly=weather_code,temperature_2m,precipitation_probability,wind_speed_10m&daily=weather_code,sunrise,sunset,temperature_2m_max,precipitation_probability_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timeformat=unixtime&timezone=${defaultData.tmz}`;
+    url = `https://api.open-meteo.com/v1/forecast?latitude=${defaultData.lat}&longitude=${defaultData.lon}&current=weather_code,temperature_2m,precipitation&hourly=weather_code,temperature_2m,precipitation_probability,wind_speed_10m&daily=weather_code,sunrise,sunset,temperature_2m_max,precipitation_probability_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timeformat=unixtime&timezone=${defaultData.tmz}`;
   }
   fetch(url)
     .then(function (response) {
@@ -89,7 +91,10 @@ function setWeather(day) {
   } else {
     rightarrow.style.visibility = "visible";
   }
-  date.textContent = days[new Date(dailyInfo[day].time).getDay()];
+  date.textContent =
+    days[
+      new Date(dailyInfo[day].time + offset * 1000 + defaultOffset).getDay()
+    ];
   icon.dataset.image = dailyInfo[day].icon;
   temp.textContent = dailyInfo[day].temp;
   rain.textContent = dailyInfo[day].prec;
@@ -107,10 +112,11 @@ function setWeather(day) {
 }
 
 function parseDailyInfo(data) {
+  offset = data.utc_offset_seconds;
   let timeOfDay = "day";
   if (
-    data.daily.sunrise[0] < data.daily.time[0] &&
-    data.daily.time[0] < data.daily.sunset[0]
+    data.daily.sunrise[0] < data.current.time &&
+    data.current.time < data.daily.sunset[0]
   ) {
     timeOfDay = "day";
   } else {
@@ -120,7 +126,7 @@ function parseDailyInfo(data) {
     time: data.current.time * 1000,
     temp: Math.round(data.current.temperature_2m),
     prec: data.current.precipitation,
-    icon: data.daily.weather_code[0] + "%" + timeOfDay,
+    icon: data.current.weather_code + "%" + timeOfDay,
   };
   for (let i = 1; i <= 6; i++) {
     dailyInfo[i] = {
@@ -137,15 +143,18 @@ function parseHourlyInfo(data) {
     for (let j = 0; j < 24; j++) {
       let timeOfDay = "day";
       if (
-        data.daily.sunrise[i] < data.hourly.time[i * 24 + j] &&
-        data.hourly.time[i * 24 + j] < data.daily.sunset[i]
+        (data.daily.sunrise[i] + offset) * 1000 + defaultOffset <
+          (data.hourly.time[i * 24 + j] + offset) * 1000 + defaultOffset &&
+        (data.hourly.time[i * 24 + j] + offset) * 1000 + defaultOffset <
+          (data.daily.sunset[i] + offset) * 1000 + defaultOffset
       ) {
         timeOfDay = "day";
       } else {
         timeOfDay = "night";
       }
+
       hourlyInfo[i][j] = {
-        time: data.hourly.time[i * 24 + j] * 1000,
+        time: (data.hourly.time[i * 24 + j] + offset) * 1000 + defaultOffset,
         temp: Math.round(data.hourly.temperature_2m[i * 24 + j]),
         prec: data.hourly.precipitation_probability[i * 24 + j],
         wind: data.hourly.wind_speed_10m[i * 24 + j],

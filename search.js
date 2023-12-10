@@ -43,25 +43,31 @@ function updateData() {
 }
 
 function fetchSuggestions() {
-  console.log("fetching suggestions");
-  fetch(
-    `https://api.geoapify.com/v1/geocode/autocomplete?text=${cityinput.value}&apiKey=adfa3b3e8fbc4453b356bdd9ae3b341f`
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((response) => {
-      if (response.features.length > 0) {
-        locationData = response;
-        citylist.replaceChildren();
-        response.features.forEach((item) => {
-          if (item.properties.city) {
-            let opt = document.createElement("option");
-            opt.value =
-              item.properties.address_line1 + ", " + item.properties.country;
-            citylist.append(opt);
-          }
-        });
-      }
-    });
+  if (cityinput.value !== "") {
+    fetch(
+      `https://api.geoapify.com/v1/geocode/autocomplete?text=${cityinput.value}&apiKey=adfa3b3e8fbc4453b356bdd9ae3b341f`
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        if (response.features.length > 0) {
+          locationData = response;
+          citylist.replaceChildren();
+          response.features.forEach((item) => {
+            if (
+              item.properties.city &&
+              item.properties.category ==
+                (null || "administrative" || "populated_place")
+            ) {
+              let opt = document.createElement("option");
+              opt.value =
+                item.properties.address_line1 + ", " + item.properties.country;
+              citylist.append(opt);
+            }
+          });
+        }
+      })
+      .catch((response) => {});
+  }
 }
