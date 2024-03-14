@@ -24,6 +24,7 @@ body {
 }
 
 #carousel {
+	background-color: white;
 	width: 90%;
 	align-self: center;
 	justify-self: center;
